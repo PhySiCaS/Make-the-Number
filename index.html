@@ -707,9 +707,9 @@
             <button class="tab active" onclick="switchTab('2digit')">2 Digit</button>
             <button class="tab" onclick="switchTab('3digit')">3 Digit</button>
             <button class="tab" onclick="switchTab('make24')">Make 24</button>
-            <button class="tab" onclick="switchTab('help')">Help</button>
             <button class="tab" onclick="switchTab('leaderboard')">Leaderboard</button>
             <button class="tab" onclick="switchTab('profile')">Profile</button>
+            <button class="tab" onclick="switchTab('help')">Help</button>
         </div>
         
         <div class="auth-container" id="authContainer">
@@ -821,7 +821,7 @@
                     </div>
                     <div class="stat-item">
                         <h3>Make 24 Score</h3>
-                        <p id="scoreMake24">0</p>
+                        <p id="scoremake24">0</p>
                     </div>
                     <div class="stat-item">
                         <h3>Fastest Time</h3>
@@ -1023,7 +1023,7 @@
                 document.getElementById('profileTitle').textContent = '-';
                 document.getElementById('score2digit').textContent = 0;
                 document.getElementById('score3digit').textContent = 0;
-                document.getElementById('scoreMake24').textContent = 0;
+                document.getElementById('scoremake24').textContent = 0;
                 document.getElementById('fastestTime').textContent = '--';
                 return;
             }
@@ -1036,7 +1036,7 @@
                     document.getElementById('profileTitle').textContent = userData.username;
                     document.getElementById('score2digit').textContent = userData.score2digit || 0;
                     document.getElementById('score3digit').textContent = userData.score3digit || 0;
-                    document.getElementById('scoreMake24').textContent = userData.scoreMake24 || 0;
+                    document.getElementById('scoremake24').textContent = userData.scoremake24 || 0;
                     document.getElementById('fastestTime').textContent = userData.fastestTime ? userData.fastestTime + 's' : '--';
                 }
             } catch (error) {
@@ -1168,7 +1168,7 @@
                         scoreField = 'score3digit';
                         break;
                     case 'make24':
-                        scoreField = 'scoreMake24';
+                        scoreField = 'scoremake24';
                         break;
                     case 'fastest':
                         scoreField = 'fastestTime';
