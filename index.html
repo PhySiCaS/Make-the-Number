@@ -1497,21 +1497,44 @@
                         break;
                 }
                 
-                // Remove the original number and add result
-                removeNumber(gameState.selectedBox.id, gameState.selectedBox.isOriginal);
-                gameState.resultNumbers.push({
-                    id: gameState.nextId++,
-                    value: Math.round(result * 1000) / 1000,
-                    isOriginal: false
-                });
+                const newId = gameState.nextId++;
+                const newValue = Math.round(result * 1000) / 1000;
+                const wasOriginal = gameState.selectedBox.isOriginal;
+                
+                // Replace the number in place instead of moving to results container
+                if (gameState.selectedBox.isOriginal) {
+                    const numObj = gameState.originalNumbers.find(n => n.id === gameState.selectedBox.id);
+                    if (numObj) {
+                        numObj.value = newValue;
+                        numObj.isOriginal = false;
+                        numObj.id = newId; // Give it a new ID
+                    }
+                } else {
+                    const numObj = gameState.resultNumbers.find(n => n.id === gameState.selectedBox.id);
+                    if (numObj) {
+                        numObj.value = newValue;
+                        numObj.id = newId; // Give it a new ID
+                    }
+                }
                 
                 updateNumbersDisplay();
-                updateMessage(`Applied operation. Result: ${result}`, 'info');
+                
+                // Auto-select the new result
+                gameState.selectedBox = {id: newId, isOriginal: wasOriginal};
+                
+                // Wait for the display update to complete, then select the new box
+                setTimeout(() => {
+                    const newBox = document.getElementById(`box-${newId}`);
+                    if (newBox) {
+                        newBox.classList.add('selected');
+                    }
+                }, 100);
+                
+                updateMessage(`Great!`, 'info');
                 
                 checkWin();
                 
             } catch (error) {
-                updateMessage('Invalid operation!', 'error');
             }
         }
         
@@ -1622,24 +1645,47 @@
                         break;
                 }
                 
-                // Remove both numbers and add result
-                removeNumber(firstBox.id, firstBox.isOriginal);
-                removeNumber(secondBox.id, secondBox.isOriginal);
+                const newId = gameState.nextId++;
+                const newValue = resultObj || (Math.round(result * 1000) / 1000);
                 
-                gameState.resultNumbers.push({
-                    id: gameState.nextId++,
-                    value: resultObj || (Math.round(result * 1000) / 1000),
-                    isOriginal: false
-                });
+                // Replace the second number in place and remove the first
+                if (secondBox.isOriginal) {
+                    const numObj = gameState.originalNumbers.find(n => n.id === secondBox.id);
+                    if (numObj) {
+                        numObj.value = newValue;
+                        numObj.isOriginal = false;
+                        numObj.id = newId; // Give it a new ID
+                    }
+                } else {
+                    const numObj = gameState.resultNumbers.find(n => n.id === secondBox.id);
+                    if (numObj) {
+                        numObj.value = newValue;
+                        numObj.id = newId; // Give it a new ID
+                    }
+                }
+                
+                // Remove the first number
+                removeNumber(firstBox.id, firstBox.isOriginal);
                 
                 clearOperationSelection();
                 updateNumbersDisplay();
+                
+                // Auto-select the new result and keep it ready for next operation
+                gameState.selectedBox = {id: newId, isOriginal: secondBox.isOriginal};
+                
+                // Wait for the display update to complete, then select the new box
+                setTimeout(() => {
+                    const newBox = document.getElementById(`box-${newId}`);
+                    if (newBox) {
+                        newBox.classList.add('selected');
+                    }
+                }, 100);
+                
                 updateMessage(`Great!`, 'info');
                 
                 checkWin();
                 
             } catch (error) {
-                updateMessage('Invalid operation!', 'error');
             }
         }
 
